@@ -22,10 +22,10 @@ class AppRouter extends React.Component {
           <Switch>
             <Route exact={true} path="/" component={MainPage} />
             <Route path="/signup" render={(props) => (
-              !store.getState().isLoggedIn ? <SignUp {...props} /> : <Redirect to="/" />
+              !store.getState().user.isLoggedIn ? <SignUp {...props} /> : <Redirect to="/" />
             )} />
             <Route path="/login" render={(props) => (
-              !store.getState().isLoggedIn ? <LogIn {...props} /> : <Redirect to="/" />
+              !store.getState().user.isLoggedIn ? <LogIn {...props} /> : <Redirect to="/" />
             )} />
             {/* <Redirect to="/" /> */}
           </Switch>

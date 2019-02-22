@@ -1,14 +1,15 @@
 import * as React from 'react';
 import Form from './Form';
 import HTTP from '../services/HTTP';
+import { connect } from 'react-redux';
 
-class LogIn extends React.Component {
+class LogIn extends React.PureComponent {
 
-  public handleSubmit = async (target: any) => {
+  public handleSubmit = async (user: any) => {
     const body = {
       auth: {
-        [target.email.name]: target.email.value,
-        [target.password.name]: target.password.value
+        email: user.email,
+        password: user.password
       }
     };
 
@@ -17,9 +18,9 @@ class LogIn extends React.Component {
 
   public render() {
     return (
-      <Form title="Authorization" submit="Log In" handleSubmit={this.handleSubmit} />
+      <Form title="Authorization" submit="Log In" onHandleSubmit={this.handleSubmit} />
     )
   }
 }
 
-export default LogIn;
+export default connect()(LogIn);

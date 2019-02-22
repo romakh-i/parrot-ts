@@ -3,13 +3,16 @@ import logo from "../assets/images/logo.png";
 import { Link } from 'react-router-dom'
 import HTTP from '../services/HTTP';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { getuser, unauthorize } from '../store/index';
 
 interface IProps {
   isLoggedIn: boolean;
-  dispatch: (arg0: any) => any;
   fixed?: string;
   jwt?: string;
   email?: string;
+  unauthorize: any;
+  getuser: any;
 }
 
 class Header extends React.Component<IProps> {
@@ -27,12 +30,12 @@ class Header extends React.Component<IProps> {
     if (user instanceof Error) {
       this.logOut();
     } else {
-      this.props.dispatch({ type: 'GET_USER', email: user.email })
+      this.props.getuser({ email: user.email })
     }
   }
 
   public logOut = () => {
-    this.props.dispatch({ type: 'UNAUTHORIZE' });
+    this.props.unauthorize();
   }
 
   public render() {
@@ -54,7 +57,7 @@ class Header extends React.Component<IProps> {
                 <Link to="/" className="nav-link">ALL PRODUCTS</Link>
               </li>
               <li className="nav-item">
-                <Link to="/" className="nav-link">ABOUT US</Link>
+                <Link to="/login" className="nav-link">ABOUT US</Link>
               </li>
               {!this.props.isLoggedIn ? (
                 [(<li key="login" className="nav-item"><Link to="/login" className="nav-link">LOG IN</Link></li>),
@@ -71,10 +74,19 @@ class Header extends React.Component<IProps> {
   }
 }
 
-const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.isLoggedIn,
-  jwt: state.jwt,
-  email: state.email
-});
+const mapStateToProps = ({ user: { isLoggedIn, jwt, email } }: any) => {
+  return {
+    isLoggedIn,
+    jwt,
+    email
+  }
+};
 
-export default connect(mapStateToProps)(Header);
+function mapDispatchToProps(dispatch: any) {
+  return {
+    unauthorize: bindActionCreators(unauthorize, dispatch),
+    getuser: bindActionCreators(getuser, dispatch),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Header);

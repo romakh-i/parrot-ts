@@ -6,23 +6,26 @@ import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Wrapper from './Wrapper';
 import { authorize } from '../store/index';
+import { Field, reduxForm, InjectedFormProps } from 'redux-form'
 
-
-interface IProps {
-  handleSubmit: (target: any) => any;
+interface IOwnProps {
+  title?: string;
+  submit?: string;
+  onHandleSubmit: (e: any) => any;
+}
+interface IProps extends InjectedFormProps, IOwnProps {
+  formm: any;
   isLoggedIn: boolean;
-  title: string;
-  submit: string;
-  actions: any;
+  authorize: any;
 }
 
-class Form extends React.Component<IProps> {
+class User extends React.PureComponent<IProps> {
+
   public notify = (text: string) => toast(text + "!", { position: toast.POSITION.TOP_CENTER, className: 'toast-notif' });
 
   public handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    const response = await this.props.handleSubmit(e.target);
+    const response = await this.props.onHandleSubmit(this.props.formm.user.values);
 
     if (response.errors) {
       for (const key in response.errors) {
@@ -34,7 +37,8 @@ class Form extends React.Component<IProps> {
       this.notify('Entered wrong data!');
     }
     else {
-      this.props.actions({ jwt: response.jwt })
+      this.props.authorize({ jwt: response.jwt })
+
     }
   }
 
@@ -53,9 +57,9 @@ class Form extends React.Component<IProps> {
           <div className="row">
             <form className="signup-form" onSubmit={this.handleSubmit}>
               <label className="text-center form-title">{this.props.title}</label>
-              <input type="text" className="form-control" name="email" placeholder="Email" />
-              <input type="password" className="form-control" name="password" placeholder="Password" />
-              <input type="submit" className="form-control" value={this.props.submit} />
+              <Field type="text" className="form-control" name="email" component="input" placeholder="Email" />
+              <Field type="password" className="form-control" name="password" component="input" placeholder="Password" />
+              <input type="submit" className="form-control" />
             </form>
           </div>
         </div>
@@ -64,19 +68,22 @@ class Form extends React.Component<IProps> {
     )
   }
 }
+const UserForm = reduxForm({
+  form: 'user'
+})(User)
 
-const mapStateToProps = (state: any) => ({
-  isLoggedIn: state.isLoggedIn
+const mapStateToProps = ({ user: { isLoggedIn }, form: formm }: any, { title, submit, onHandleSubmit }: IOwnProps) => ({
+  formm,
+  isLoggedIn,
+  title,
+  submit,
+  onHandleSubmit
 });
-
-// const mapDispatchToProps = (dispatch: any) => {
-//   return bindActionCreators({ authorize }, dispatch)
-// };
 
 function mapDispatchToProps(dispatch: any) {
   return {
-    actions: bindActionCreators(authorize, dispatch)
+    authorize: bindActionCreators(authorize, dispatch)
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Form);
+export default connect(mapStateToProps, mapDispatchToProps)(UserForm);

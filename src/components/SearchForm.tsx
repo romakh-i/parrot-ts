@@ -1,4 +1,5 @@
-import * as React from 'react'
+import * as React from 'react';
+import Select from './Select';
 
 class SearchForm extends React.Component {
   public render() {
@@ -13,16 +14,7 @@ class SearchForm extends React.Component {
         </div>
         <form className="form-row search-form">
           <div className="col-auto">
-            <div className="dropdown">
-              <button className="btn bg-white dropdown-toggle" type="button" id="dropdownCategory" data-toggle="dropdown"
-                aria-haspopup="true" aria-expanded="false">Category</button>
-
-              <div className="dropdown-menu" aria-labelledby="dropdownCategory" x-placement="bottom-start">
-                <button className="dropdown-item" type="button">Action</button>
-                <button className="dropdown-item" type="button">Another action</button>
-                <button className="dropdown-item" type="button">Something else here</button>
-              </div>
-            </div>
+            <Select />
           </div>
           <div className="col-6 col-sm-5 search-field">
             <input type="text" className="form-control" />

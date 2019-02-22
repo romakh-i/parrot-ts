@@ -2,12 +2,12 @@ import * as React from 'react';
 import Form from './Form';
 import HTTP from '../services/HTTP';
 
-class SignUp extends React.Component {
-  public handleSubmit = async (target: any) => {
+class SignUp extends React.PureComponent {
+  public handleSubmit = async (user: any) => {
     const body = {
       user: {
-        [target.email.name]: target.email.value,
-        [target.password.name]: target.password.value
+        email: user.email,
+        password: user.password
       }
     };
 
@@ -16,7 +16,7 @@ class SignUp extends React.Component {
 
   public render() {
     return (
-      <Form title="Registration" submit="Sign Up" handleSubmit={this.handleSubmit} />
+      <Form title="Registration" submit="Sign Up" onHandleSubmit={this.handleSubmit} />
     )
   }
 }
